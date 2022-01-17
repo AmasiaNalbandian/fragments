@@ -14,5 +14,8 @@
     "url": "git+https://github.com/yourname/fragments.git"
   },
   "author": "Amasia Nalbandian",
-  "license": "UNLICENSED"
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "prettier": "2.5.1"
+  }
 }
