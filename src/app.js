@@ -8,6 +8,8 @@ const compression = require('compression');
 // version and author from our package.json file
 const { version, author } = require('../package.json');
 
+const passport = require('passport');
+const authorization = require('./authorization');
 const logger = require('./logger');
 const pino = require('pino-http')({
   // Use our default logger instance, which is already configured
@@ -28,6 +30,10 @@ app.use(cors());
 
 // Use gzip/deflate compression middleware
 app.use(compression());
+
+// Set up our passport authorization middleware
+passport.use(authorization.strategy());
+app.use(passport.initialize());
 
 // Define our routes
 app.use('/', require('./routes'));
