@@ -17,13 +17,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/yourname/fragments.git"
+    "url": "git+https://github.com/AmasiaNalbandian/fragments.git"
   },
   "author": "Amasia Nalbandian",
   "license": "UNLICENSED",
   "devDependencies": {
     "cross-env": "^7.0.3",
     "eslint": "^8.7.0",
+    "htpasswd": "^2.4.5",
     "jest": "^27.4.7",
     "nodemon": "^2.0.15",
     "prettier": "2.5.1",
