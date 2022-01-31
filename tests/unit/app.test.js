@@ -6,7 +6,8 @@ const app = require('../../src/app');
 
 describe('GET /', () => {
   // If the request is missing the Authorization header, it should be forbidden
-  test('Route does not exist', () => request(app).get('/v2/fragments').expect(404));
+  test('should return 404 for route which does not exist', () =>
+    request(app).get('/v2/fragments').expect(404));
 
   // If the route exists under .routes
   test('should return HTTP 401 for a route which exists, but unauthorized', () =>
