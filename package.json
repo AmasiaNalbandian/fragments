@@ -22,10 +22,12 @@
   "author": "Amasia Nalbandian",
   "license": "UNLICENSED",
   "devDependencies": {
+    "content-type": "^1.0.4",
     "cross-env": "^7.0.3",
     "eslint": "^8.7.0",
     "htpasswd": "^2.4.5",
     "jest": "^27.4.7",
+    "nanoid": "^3.2.0",
     "nodemon": "^2.0.15",
     "prettier": "2.5.1",
     "supertest": "^6.2.2"
