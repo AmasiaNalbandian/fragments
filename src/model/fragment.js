@@ -69,11 +69,11 @@ class Fragment {
   static async byId(ownerId, id) {
     // TODO
     try {
-      var fragmentById = new Fragment(await readFragment(ownerId, id));
+      var fragmentById = await readFragment(ownerId, id);
     } catch (e) {
       logger.error(`Fragment.js - byId - ${e}`);
     }
-    return fragmentById;
+    return new Fragment(fragmentById);
   }
 
   /**
@@ -153,10 +153,11 @@ class Fragment {
 
     try {
       this.save();
-      return writeFragmentData(this.ownerId, this.id, data);
+      var f = writeFragmentData(this.ownerId, this.id, data);
     } catch (e) {
       logger.error(`There was an error setting data: ${e}`);
     }
+    return f;
   }
 
   /**
