@@ -12,10 +12,10 @@ const {
   listFragments,
   deleteFragment,
 } = require('./data/memory/index');
-const { P } = require('pino');
+// const { P } = require('pino');
 const logger = require('../../src/logger');
-const { json } = require('express/lib/response');
-
+// const { json } = require('express/lib/response');
+// TODO: come back and write better logs with pino
 // Supported formats - list of the formats as global
 const supportedFormats = ['text/plain'];
 
@@ -40,7 +40,7 @@ class Fragment {
     this.updated = updated || new Date().toISOString();
     this.type = type;
     this.size = size;
-    logger.info(`Fragment.js - Constructor - type:  ${this.type}`);
+    logger.debug(`Fragment.js - Constructor - type:  ${this.type}`);
   }
 
   /**

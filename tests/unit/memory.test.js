@@ -2,7 +2,7 @@
 const MemoryDB = require('../../src/model/data/memory/index');
 
 describe('memory-db index', () => {
-  let db;
+  // let db;
 
   beforeEach(() => {
     // const data = new MemoryDB();
