@@ -21,7 +21,7 @@ module.exports = (req, res) => {
           })
         );
       })
-      .catch((e) => {
+      .catch(() => {
         res.status(404).json(
           response.createErrorResponse({
             status: 'error',
@@ -48,7 +48,7 @@ module.exports = (req, res) => {
           response.createErrorResponse({
             status: 'error',
             error: {
-              message: 'Something went wrong trying to get fragments for user by id',
+              message: `Something went wrong trying to get fragments for user by id: ${e}`,
               code: 400,
             },
           })
