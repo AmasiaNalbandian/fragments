@@ -195,6 +195,7 @@ class Fragment {
    * @returns {boolean} true if we support this Content-Type (i.e., type/subtype)
    */
   static isSupportedType(value) {
+    // Change this to getFormats to see if its one of those, and then return (as we update the types supported)
     let isSupported = value.includes('text/plain');
     logger.info(
       `Fragment - isSupportType - Value of ${value} ${isSupported ? 'is' : 'is not'} supported.`
