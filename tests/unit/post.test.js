@@ -4,7 +4,6 @@ const request = require('supertest');
 require('dotenv').config();
 
 const app = require('../../src/app');
-const { Fragment } = require('../../src/model/fragment');
 
 describe('POST /v1/fragments', () => {
   // If the request is missing the Authorization header, it should be forbidden
