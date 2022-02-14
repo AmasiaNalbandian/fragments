@@ -1,8 +1,10 @@
 // tests/unit/get.test.js
 
 const request = require('supertest');
+const hash = require('../../src/hash');
 
 const app = require('../../src/app');
+const { Fragment } = require('../../src/model/fragment');
 
 describe('GET /v1/fragments', () => {
   // If the request is missing the Authorization header, it should be forbidden
@@ -18,6 +20,32 @@ describe('GET /v1/fragments', () => {
     expect(res.statusCode).toBe(200);
     expect(res.body.status).toBe('ok');
     expect(Array.isArray(res.body.fragments)).toBe(true);
+  });
+
+  test('authenticated users request a fragment that does not exist', async () => {
+    const res = await request(app)
+      .get('/v1/fragments/123123123')
+      .auth('user1@email.com', 'password1');
+    expect(res.statusCode).toBe(404);
+    expect(res.body.status).toBe('error');
+  });
+
+  test('authenticated users request a fragment that does exist', async () => {
+    const user = hash('user1@email.com');
+    const fragment = new Fragment({
+      ownerId: user,
+      type: 'text/plain',
+      size: 0,
+    });
+    fragment.save();
+    const res = await request(app)
+      .get(`/v1/fragments/${fragment.id}`)
+      .auth('user1@email.com', 'password1');
+    expect(res.statusCode).toBe(200);
+    expect(res.body.status).toBe('ok');
+    expect(await Fragment.byId(res.body.fragments.ownerId, res.body.fragments.id)).toStrictEqual(
+      await Fragment.byId(fragment.ownerId, fragment.id)
+    );
   });
 
   // TODO: we'll need to add tests to check the contents of the fragments array later
