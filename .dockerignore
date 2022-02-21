@@ -1,0 +1,14 @@
+# Files/Directories we dont want to send to Docker Daemon
+.github/
+.vscode/
+coverage/
+node_modules/
+tests/
+# Exception to tests/.htpasswd  - we want this one!
+!tests/.htpasswd
+.env
+.eslintrc.js
+.git/
+.gitignore
+.prettier*
+jest*
