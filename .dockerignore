@@ -12,3 +12,5 @@ tests/
 .gitignore
 .prettier*
 jest*
+*.md
+password.txt

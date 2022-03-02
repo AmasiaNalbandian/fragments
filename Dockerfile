@@ -2,7 +2,7 @@
 
 # base image to use for the microservice image.
 # we also include :tag of the exact version to replicate dev env.
-FROM node:14.18.3
+FROM node:14.19-alpine3.14@sha256:8c93166ecea91d8384d9f1768ceaca1cd8bc22c1eb13005cecfb491588bd8169 AS dependencies
 
 # Metadata about image
 LABEL maintainer="Amasia Nalbandian<analbandian@myseneca.ca>"
@@ -19,6 +19,9 @@ ENV NPM_CONFIG_LOGLEVEL=warn
 # Disable colour when run inside Docker
 # https://docs.npmjs.com/cli/v8/using-npm/config#color
 ENV NPM_CONFIG_COLOR=false
+
+#Building this in production only for prod deps
+ENV NODE_ENV=production
 #------------------------------------------------------------
 
 
@@ -35,7 +38,7 @@ WORKDIR /app
 COPY package*.json /app/
 
 # Install node dependencies defined in package-lock.json
-RUN npm install
+RUN npm ci --only=production
 
 # Copy src to /app/src/
 COPY ./src ./src
@@ -48,3 +51,11 @@ CMD npm start
 
 # We run our service on port 8080
 EXPOSE 8080
+
+
+############################################################################
+FROM nginx:stable-alpine@sha256:74694f2de64c44787a81f0554aa45b281e468c0c58b8665fafceda624d31e556 AS deploy
+
+COPY --from=dependencies /app /usr/share/nginx/html/
+
+EXPOSE 80 
