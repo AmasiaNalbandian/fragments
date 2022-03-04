@@ -83,7 +83,7 @@ class Fragment {
    */
   static delete(ownerId, id) {
     try {
-      const deleteFragments = deleteFragment(ownerId, id);
+      const deleteFragments = await deleteFragment(ownerId, id);
       return deleteFragments;
     } catch (e) {
       logger.error('Fragment.js - delete: There was an error deleting the fragment');
@@ -109,7 +109,7 @@ class Fragment {
       size: this.size,
     };
     try {
-      const f = writeFragment(fragment);
+      const f = await writeFragment(fragment);
       logger.debug(
         `Fragment.js - Constructor - saved new fragment:  ${fragment.id} for owner: ${this.ownerId} at ${this.updated}`
       );
@@ -126,7 +126,7 @@ class Fragment {
    */
   getData() {
     try {
-      const f = readFragmentData(this.ownerId, this.id);
+      const f = await readFragmentData(this.ownerId, this.id);
       return f;
     } catch (e) {
       logger.error(
@@ -149,7 +149,7 @@ class Fragment {
 
     try {
       this.save();
-      const f = writeFragmentData(this.ownerId, this.id, data);
+      const f = await writeFragmentData(this.ownerId, this.id, data);
       return f;
     } catch (e) {
       logger.error(`There was an error setting data: ${e}`);
