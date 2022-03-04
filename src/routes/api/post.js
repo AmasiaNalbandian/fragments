@@ -32,7 +32,7 @@ module.exports = (req, res) => {
   }
   save().then(() => {
     res.setHeader('Content-Type', fragment.type);
-    res.setHeader('Location', `${process.env.API_URL}/fragments/${fragment.id}`);
+    res.setHeader('Location', `${process.env.API_URL}/v1/fragments/${fragment.id}`);
 
     res.status(201).json(
       response.createSuccessResponse({
