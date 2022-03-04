@@ -13,11 +13,11 @@ module.exports = (req, res) => {
   if (req.params.id) {
     logger.debug(`GET v1/fragments - Fragment ID detected: ${req.params.id}`);
     getFragmentById(req.user, req.params.id)
-      .then((fragments) => {
+      .then((fragment) => {
         res.status(200).json(
           response.createSuccessResponse({
             status: 'ok',
-            fragments: fragments,
+            fragment: fragment,
           })
         );
       })
@@ -65,6 +65,6 @@ async function getFragmentByUserId(user, expand) {
 
 async function getFragmentById(user, fragmentId) {
   logger.info(`API - get.js: Attempting to get fragment by fragment id`);
-  let fragments = await Fragment.byId(user, fragmentId);
-  return fragments;
+  let fragment = await Fragment.byId(user, fragmentId);
+  return fragment;
 }
