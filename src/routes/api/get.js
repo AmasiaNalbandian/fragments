@@ -59,12 +59,12 @@ module.exports = (req, res) => {
 
 async function getFragmentByUserId(user, expand) {
   logger.info(`API - get.js: Attempting to get fragments by user`);
-  var fragments = await Fragment.byUser(user, expand);
+  let fragments = await Fragment.byUser(user, expand);
   return fragments;
 }
 
 async function getFragmentById(user, fragmentId) {
   logger.info(`API - get.js: Attempting to get fragment by fragment id`);
-  var fragments = await Fragment.byId(user, fragmentId);
+  let fragments = await Fragment.byId(user, fragmentId);
   return fragments;
 }

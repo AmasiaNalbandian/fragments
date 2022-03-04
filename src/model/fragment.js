@@ -52,12 +52,12 @@ class Fragment {
    */
   static async byUser(ownerId, expand = false) {
     try {
-      var fragments = await listFragments(ownerId, expand);
+      const fragments = await listFragments(ownerId, expand);
       logger.info(`Fragments.js - By User - Returned fragments: ${JSON.stringify(fragments)}`);
+      return fragments;
     } catch (e) {
       logger.error(`There was an error fetching fragments byUser: ${e}`);
     }
-    return fragments;
   }
 
   /**
@@ -68,11 +68,11 @@ class Fragment {
    */
   static async byId(ownerId, id) {
     try {
-      var fragmentById = await readFragment(ownerId, id);
+      const fragmentById = await readFragment(ownerId, id);
+      return new Fragment(fragmentById);
     } catch (e) {
       logger.error(`Fragment.js - byId - ${e}`);
     }
-    return new Fragment(fragmentById);
   }
 
   /**
@@ -83,11 +83,11 @@ class Fragment {
    */
   static delete(ownerId, id) {
     try {
-      var deleteFragments = deleteFragment(ownerId, id);
+      const deleteFragments = deleteFragment(ownerId, id);
+      return deleteFragments;
     } catch (e) {
       logger.error('Fragment.js - delete: There was an error deleting the fragment');
     }
-    return deleteFragments;
   }
 
   /**
@@ -109,15 +109,15 @@ class Fragment {
       size: this.size,
     };
     try {
-      var f = writeFragment(fragment);
+      const f = writeFragment(fragment);
       logger.debug(
         `Fragment.js - Constructor - saved new fragment:  ${fragment.id} for owner: ${this.ownerId} at ${this.updated}`
       );
+      return f;
     } catch (e) {
       logger.error(`Fragment.js - Constructor - Could not create new fragment`);
       throw e;
     }
-    return f;
   }
 
   /**
@@ -126,13 +126,13 @@ class Fragment {
    */
   getData() {
     try {
-      var f = readFragmentData(this.ownerId, this.id);
+      const f = readFragmentData(this.ownerId, this.id);
+      return f;
     } catch (e) {
       logger.error(
         `Fragment.js - getData() - Could not fetch data for the fragment with id: ${this.id}`
       );
     }
-    return f;
   }
 
   /**
@@ -149,11 +149,11 @@ class Fragment {
 
     try {
       this.save();
-      var f = writeFragmentData(this.ownerId, this.id, data);
+      const f = writeFragmentData(this.ownerId, this.id, data);
+      return f;
     } catch (e) {
       logger.error(`There was an error setting data: ${e}`);
     }
-    return f;
   }
 
   /**
