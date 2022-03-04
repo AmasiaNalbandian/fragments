@@ -61,7 +61,6 @@ class MemoryDB {
     logger.info(`memory-db - QUERY - Primary Key: ${primaryKey}`);
 
     if (!validateKey(primaryKey)) {
-      // TODO: trace back errors and make sure we log out properly.
       throw new Error(`primaryKey string is required, got primaryKey=${primaryKey}`);
     }
 

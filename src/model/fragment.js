@@ -14,9 +14,10 @@ const {
 } = require('./data/memory/index');
 // const { P } = require('pino');
 const logger = require('../../src/logger');
-// const { json } = require('express/lib/response');
-// TODO: come back and write better logs with pino
-// Supported formats - list of the formats as global
+
+/**
+ * List of supported formats for the app
+ */
 const supportedFormats = ['text/plain'];
 
 class Fragment {
@@ -50,7 +51,6 @@ class Fragment {
    * @returns Promise<Array<Fragment>>
    */
   static async byUser(ownerId, expand = false) {
-    // TODO
     try {
       var fragments = await listFragments(ownerId, expand);
       logger.info(`Fragments.js - By User - Returned fragments: ${JSON.stringify(fragments)}`);
@@ -67,7 +67,6 @@ class Fragment {
    * @returns Promise<Fragment>
    */
   static async byId(ownerId, id) {
-    // TODO
     try {
       var fragmentById = await readFragment(ownerId, id);
     } catch (e) {
@@ -83,7 +82,6 @@ class Fragment {
    * @returns Promise
    */
   static delete(ownerId, id) {
-    // TODO
     try {
       var deleteFragments = deleteFragment(ownerId, id);
     } catch (e) {
@@ -97,7 +95,6 @@ class Fragment {
    * @returns Promise
    */
   save() {
-    // TODO
     logger.debug(`Fragment.js - Save() - Time before update: ${this.updated}`);
     this.updated = new Date().toISOString();
     logger.debug(
@@ -144,7 +141,6 @@ class Fragment {
    * @returns Promise
    */
   async setData(data) {
-    // TODO
     if (!Buffer.isBuffer(data)) {
       throw new Error(`Data must be of buffer type`);
     }
@@ -174,7 +170,6 @@ class Fragment {
    * @returns {boolean} true if type is text/plain
    */
   get isText() {
-    // TODO
     const isText = this.type.includes('text/plain');
     logger.info(`Fragment.js - isText - type:  ${isText}`);
 
