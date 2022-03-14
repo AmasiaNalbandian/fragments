@@ -18,7 +18,13 @@ const logger = require('../../src/logger');
 /**
  * List of supported formats for the app
  */
-const supportedFormats = ['text/plain'];
+const supportedFormats = [
+  'text/plain',
+  'text/plain; charset=utf-8',
+  'text/markdown',
+  'text/html',
+  'application/json',
+];
 
 class Fragment {
   constructor({ id = nanoid(), ownerId, created, updated, type, size = 0 }) {
@@ -26,8 +32,12 @@ class Fragment {
       throw new Error(`Size must be a positive number, got size=${size}`);
     }
 
-    if (!type.includes('text/plain')) {
-      throw new Error(`Type is not supported, must be plain/text but got ${type}`);
+    if (!supportedFormats.includes(type)) {
+      throw new Error(
+        `Type is not supported, must be one of
+        ${supportedFormats}
+        but got ${type}`
+      );
     }
 
     if (!ownerId) {
@@ -50,14 +60,8 @@ class Fragment {
    * @param {boolean} expand whether to expand ids to full fragments
    * @returns Promise<Array<Fragment>>
    */
-  static async byUser(ownerId, expand = false) {
-    try {
-      const fragments = await listFragments(ownerId, expand);
-      logger.info(`Fragments.js - By User - Returned fragments: ${JSON.stringify(fragments)}`);
-      return fragments;
-    } catch (e) {
-      logger.error(`There was an error fetching fragments byUser: ${e}`);
-    }
+  static byUser(ownerId, expand = false) {
+    return listFragments(ownerId, expand);
   }
 
   /**
@@ -66,13 +70,8 @@ class Fragment {
    * @param {string} id fragment's id
    * @returns Promise<Fragment>
    */
-  static async byId(ownerId, id) {
-    try {
-      const fragmentById = await readFragment(ownerId, id);
-      return new Fragment(fragmentById);
-    } catch (e) {
-      logger.error(`Fragment.js - byId - ${e}`);
-    }
+  static byId(ownerId, id) {
+    return readFragment(ownerId, id);
   }
 
   /**
@@ -81,7 +80,7 @@ class Fragment {
    * @param {string} id fragment's id
    * @returns Promise
    */
-  static delete(ownerId, id) {
+  static async delete(ownerId, id) {
     try {
       const deleteFragments = await deleteFragment(ownerId, id);
       return deleteFragments;
@@ -94,7 +93,7 @@ class Fragment {
    * Saves the current fragment to the database
    * @returns Promise
    */
-  save() {
+  async save() {
     logger.debug(`Fragment.js - Save() - Time before update: ${this.updated}`);
     this.updated = new Date().toISOString();
     logger.debug(
@@ -124,7 +123,7 @@ class Fragment {
    * Gets the fragment's data from the database
    * @returns Promise<Buffer>
    */
-  getData() {
+  async getData() {
     try {
       const f = await readFragmentData(this.ownerId, this.id);
       return f;
@@ -191,7 +190,7 @@ class Fragment {
    */
   static isSupportedType(value) {
     // Change this to getFormats to see if its one of those, and then return (as we update the types supported)
-    let isSupported = value.includes('text/plain');
+    let isSupported = supportedFormats.includes(value);
     logger.info(
       `Fragment - isSupportType - Value of ${value} ${isSupported ? 'is' : 'is not'} supported.`
     );

@@ -3,9 +3,7 @@
 const response = require('../../response');
 const { Fragment } = require('../../model/fragment');
 const logger = require('../../logger');
-/**
- * Get a list of fragments for the current user
- */
+
 module.exports = (req, res) => {
   logger.info(`GET v1/fragments request received`);
 
@@ -24,15 +22,13 @@ module.exports = (req, res) => {
       .catch(() => {
         res.status(404).json(
           response.createErrorResponse({
-            status: 'error',
-            error: {
-              message: `The fragment with id: ${req.params.id} does not exist.`,
-              code: 404,
-            },
+            message: `The fragment with id: ${req.params.id} does not exist.`,
+            code: 404,
           })
         );
       });
   } else {
+    // Route without id, returns getByUser
     logger.debug(`GET v1/fragments - Query: ${req.query.expand ? 'expand' : 'no expand'}`);
     getFragmentByUserId(req.user, req.query?.expand)
       .then((fragments) => {
@@ -46,11 +42,8 @@ module.exports = (req, res) => {
       .catch((e) => {
         res.status(400).json(
           response.createErrorResponse({
-            status: 'error',
-            error: {
-              message: `Something went wrong trying to get fragments for user by id: ${e}`,
-              code: 400,
-            },
+            message: `Something went wrong trying to get fragments for user by id: ${e}`,
+            code: 400,
           })
         );
       });
@@ -58,13 +51,25 @@ module.exports = (req, res) => {
 };
 
 async function getFragmentByUserId(user, expand) {
-  logger.info(`API - get.js: Attempting to get fragments by user`);
+  logger.info(`API - get.js>getFragmentByUserId: Attempting to get fragments by user`);
   let fragments = await Fragment.byUser(user, expand);
+  logger.info(`API - get.js>getFragmentByUserId: Returned fragments: ${JSON.stringify(fragments)}`);
+
   return fragments;
 }
 
 async function getFragmentById(user, fragmentId) {
   logger.info(`API - get.js: Attempting to get fragment by fragment id`);
-  let fragment = await Fragment.byId(user, fragmentId);
-  return fragment;
+  let fragment = Fragment;
+
+  fragment = await Fragment.byId(user, fragmentId);
+  // const fragmentData = await Fragment.ge
+  // Check if it is null to figure out if we throw error or not.
+  if (fragment) {
+    logger.debug(`API - get.js: getFragmentById - Fragment is not null.`);
+    return new Fragment(fragment);
+  } else {
+    logger.debug(`API - get.js: getFragmentById - Fragment is null.`);
+    throw new Error(`Fragment not found.`);
+  }
 }
