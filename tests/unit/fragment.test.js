@@ -163,7 +163,34 @@ describe('Fragment class', () => {
         type: 'text/plain; charset=utf-8',
         size: 0,
       });
-      expect(fragment.formats).toEqual(['text/plain']);
+      expect(fragment.formats).toEqual(['.txt']);
+    });
+
+    test('formats returns the expected result for text/markdown', () => {
+      const fragment = new Fragment({
+        ownerId: '1234',
+        type: 'text/markdown',
+        size: 0,
+      });
+      expect(fragment.formats).toEqual(['.md', '.html', '.txt']);
+    });
+
+    test('formats returns the expected result for text/html', () => {
+      const fragment = new Fragment({
+        ownerId: '1234',
+        type: 'text/html',
+        size: 0,
+      });
+      expect(fragment.formats).toEqual(['.html', '.txt']);
+    });
+
+    test('formats returns the expected result for application/json', () => {
+      const fragment = new Fragment({
+        ownerId: '1234',
+        type: 'application/json',
+        size: 0,
+      });
+      expect(fragment.formats).toEqual(['.json', '.txt']);
     });
   });
 
@@ -178,7 +205,7 @@ describe('Fragment class', () => {
       await fragment.save();
       await fragment.setData(data);
 
-      const fragment2 = await Fragment.byId('1234', fragment.id);
+      const fragment2 = new Fragment(await Fragment.byId('1234', fragment.id));
       expect(fragment2).toEqual(fragment);
       expect(await fragment2.getData()).toEqual(data);
     });

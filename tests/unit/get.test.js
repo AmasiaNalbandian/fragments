@@ -43,7 +43,7 @@ describe('GET /v1/fragments', () => {
       .auth('user1@email.com', 'password1');
     expect(res.statusCode).toBe(200);
     expect(res.body.status).toBe('ok');
-    expect(await Fragment.byId(res.body.fragments.ownerId, res.body.fragments.id)).toStrictEqual(
+    expect(await Fragment.byId(res.body.fragment.ownerId, res.body.fragment.id)).toStrictEqual(
       await Fragment.byId(fragment.ownerId, fragment.id)
     );
   });
