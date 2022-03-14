@@ -20,8 +20,6 @@ on:
       - 'v**'
 
 jobs:
-  # NOTE: this assumes our CI jobs have already passed previously
-  # (i.e., that we don't tag a commit manually until we know a build is working)
   aws:
     name: AWS
     runs-on: ubuntu-latest
