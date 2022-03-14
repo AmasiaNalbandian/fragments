@@ -20,7 +20,7 @@ on:
       - 'v**'
 
 jobs:
-  aws:
+  job1:
     name: AWS
     runs-on: ubuntu-latest
     steps:
