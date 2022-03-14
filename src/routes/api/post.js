@@ -30,15 +30,17 @@ module.exports = (req, res) => {
     await fragment.setData(req.body);
     logger.debug(`size after save: ${fragment.size}`);
   }
-  save().then(() => {
-    res.setHeader('Content-Type', fragment.type);
-    res.setHeader('Location', `${process.env.API_URL}/v1/fragments/${fragment.id}`);
+  save()
+    .then(() => {
+      res.setHeader('Content-Type', fragment.type);
+      res.setHeader('Location', `${process.env.API_URL}/v1/fragments/${fragment.id}`);
 
-    res.status(201).json(
-      response.createSuccessResponse({
-        status: 'ok',
-        fragment: fragment,
-      })
-    );
-  });
+      res.status(201).json(
+        response.createSuccessResponse({
+          status: 'ok',
+          fragment: fragment,
+        })
+      );
+    })
+    .catch((e) => console.log('error creating new fragment: ', e));
 };
