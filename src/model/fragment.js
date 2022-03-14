@@ -26,6 +26,25 @@ const supportedFormats = [
   'application/json',
 ];
 
+const conversions = [
+  {
+    type: 'text/plain',
+    conversionExtensions: ['.txt'],
+  },
+  {
+    type: 'text/markdown',
+    conversionExtensions: ['.md', '.html', '.txt'],
+  },
+  {
+    type: 'text/html',
+    conversionExtensions: ['.html', '.txt'],
+  },
+  {
+    type: 'application/json',
+    conversionExtensions: ['.json', '.txt'],
+  },
+];
+
 class Fragment {
   constructor({ id = nanoid(), ownerId, created, updated, type, size = 0 }) {
     if (Math.sign(size) < 0 || !Number.isInteger(size)) {
@@ -180,7 +199,8 @@ class Fragment {
    * @returns {Array<string>} list of supported mime types
    */
   get formats() {
-    return supportedFormats;
+    const conversionObject = conversions.find(({ type }) => type === this.mimeType);
+    return conversionObject.conversionExtensions;
   }
 
   /**
