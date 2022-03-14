@@ -100,12 +100,7 @@ class Fragment {
    * @returns Promise
    */
   static async delete(ownerId, id) {
-    try {
-      const deleteFragments = await deleteFragment(ownerId, id);
-      return deleteFragments;
-    } catch (e) {
-      logger.error('Fragment.js - delete: There was an error deleting the fragment');
-    }
+    return deleteFragment(ownerId, id);
   }
 
   /**
