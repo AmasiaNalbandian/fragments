@@ -180,6 +180,18 @@ class Fragment {
   }
 
   /**
+   * Returns the mime type (e.g., without encoding) for the fragment's extension provided:
+   * ".txt" -> "text/html"
+   * @param {string} ext: the extension you wish to find the type for. Must be supported mimeType.
+   * @returns {string} fragment's mime type (without encoding)
+   */
+  mimeTypeByExtension(ext) {
+    let conversion = conversions.find((conversion) => conversion.conversionExtensions[0] === ext);
+
+    return conversion.type;
+  }
+
+  /**
    * @returns {boolean} true if type is text/plain
    */
   get isText() {
