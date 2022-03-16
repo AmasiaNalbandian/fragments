@@ -15,14 +15,14 @@ module.exports = (req, res) => {
         res.status(200).json(
           response.createSuccessResponse({
             status: 'ok',
-            fragment: fragment,
+            fragment: fragment.toString(),
           })
         );
       })
-      .catch(() => {
+      .catch((e) => {
         res.status(404).json(
           response.createErrorResponse({
-            message: `The fragment with id: ${req.params.id} does not exist.`,
+            message: `The fragment with id: ${req.params.id} does not exist: ${e}`,
             code: 404,
           })
         );
@@ -60,14 +60,11 @@ async function getFragmentByUserId(user, expand) {
 
 async function getFragmentById(user, fragmentId) {
   logger.info(`API - get.js: Attempting to get fragment by fragment id`);
-  let fragment = Fragment;
+  let fragment = new Fragment(await Fragment.byId(user, fragmentId));
 
-  fragment = await Fragment.byId(user, fragmentId);
-  // const fragmentData = await Fragment.ge
-  // Check if it is null to figure out if we throw error or not.
   if (fragment) {
     logger.debug(`API - get.js: getFragmentById - Fragment is not null.`);
-    return new Fragment(fragment);
+    return fragment.getData();
   } else {
     logger.debug(`API - get.js: getFragmentById - Fragment is null.`);
     throw new Error(`Fragment not found.`);

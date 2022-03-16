@@ -32,20 +32,19 @@ describe('GET /v1/fragments', () => {
 
   test('authenticated users request a fragment that does exist', async () => {
     const user = hash('user1@email.com');
+    const data = 'This is my test string';
     const fragment = new Fragment({
       ownerId: user,
       type: 'text/plain',
       size: 0,
     });
-    fragment.save();
+    await fragment.setData(Buffer.from(data, 'utf8'));
+    await fragment.save();
     const res = await request(app)
       .get(`/v1/fragments/${fragment.id}`)
       .auth('user1@email.com', 'password1');
-    expect(res.statusCode).toBe(200);
     expect(res.body.status).toBe('ok');
-    expect(await Fragment.byId(res.body.fragment.ownerId, res.body.fragment.id)).toStrictEqual(
-      await Fragment.byId(fragment.ownerId, fragment.id)
-    );
+    expect(res.body.fragment).toStrictEqual(data);
   });
 
   // TODO: we'll need to add tests to check the contents of the fragments array later
