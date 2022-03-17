@@ -4,6 +4,7 @@ const response = require('../../response');
 const { Fragment } = require('../../model/fragment');
 const logger = require('../../logger');
 const path = require('path');
+var md = require('markdown-it')();
 
 module.exports = (req, res) => {
   logger.debug(`GET v1/fragments - Fragment ID detected: ${req.params.id}`);
@@ -35,11 +36,15 @@ module.exports = (req, res) => {
           ext.length ? metadata.mimeTypeByExtension(ext) : metadata.mimeType
         );
 
+        let isConvertedSupportType = ext === '.html' && metadata.mimeType === 'text/markdown';
+        logger.debug(
+          `isConverted: ${isConvertedSupportType}, fragment mimtype: ${metadata.mimeType}`
+        );
         res.status(200).json(
           response.createSuccessResponse({
             status: 'ok',
             code: 200,
-            fragment: data.toString(),
+            fragment: isConvertedSupportType ? md.render(data.toString()) : data.toString(),
           })
         );
       }
@@ -55,7 +60,7 @@ module.exports = (req, res) => {
 };
 
 async function getFragmentById(user, fragmentId) {
-  logger.info(`API - get.js: Attempting to get fragment by fragment id`);
+  logger.info(`API - get.js: Attempting to get fragment by fragment id: ${fragmentId}`);
   let metadata = new Fragment(await Fragment.byId(user, fragmentId));
 
   if (metadata) {
