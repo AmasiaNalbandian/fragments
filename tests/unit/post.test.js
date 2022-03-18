@@ -14,7 +14,7 @@ describe('POST /v1/fragments', () => {
     request(app).post('/v1/fragments').auth('invalid@email.com', 'incorrect_password').expect(401));
 
   // Using a valid username/password pair but unsupported content type
-  test('authenticated user requests unsupported content type', async () => {
+  test('authenticated user creates POST requests for unsupported content type', async () => {
     const res = await request(app)
       .post('/v1/fragments')
       .auth('user1@email.com', 'password1')
@@ -23,7 +23,7 @@ describe('POST /v1/fragments', () => {
     expect(res.body.status).toBe('error');
   });
 
-  test('authenticated users request supported content type', async () => {
+  test('authenticated users creates POST request for text/plain content type', async () => {
     const res = await request(app)
       .post('/v1/fragments')
       .auth('user1@email.com', 'password1')
@@ -31,9 +31,50 @@ describe('POST /v1/fragments', () => {
       .send('this is a fragment');
 
     expect(res.statusCode).toBe(201);
-    // expect(res.headers.location).toBe(`${process.env.API_URL}/fragments/${res.body.fragment.id}`);
+    expect(res.text.includes('text/plain')).toBe(true);
   });
 
-  // TODO: we'll need to add tests to check the contents of the fragments array later
-  // I'm unable to do this, there's an issue with my authenticate function
+  test('authenticated users creates POST request for text/html content type', async () => {
+    const res = await request(app)
+      .post('/v1/fragments')
+      .auth('user1@email.com', 'password1')
+      .set('Content-type', 'text/html')
+      .send('this is a fragment');
+
+    expect(res.statusCode).toBe(201);
+    expect(res.text.includes('text/html')).toBe(true);
+  });
+
+  test('authenticated users creates POST request for text/markdown content type', async () => {
+    const res = await request(app)
+      .post('/v1/fragments')
+      .auth('user1@email.com', 'password1')
+      .set('Content-type', 'text/markdown')
+      .send('this is a fragment');
+
+    expect(res.statusCode).toBe(201);
+    expect(res.text.includes('text/markdown')).toBe(true);
+  });
+
+  test('authenticated users creates POST request for application/json content type', async () => {
+    const res = await request(app)
+      .post('/v1/fragments')
+      .auth('user1@email.com', 'password1')
+      .set('Content-type', 'application/json')
+      .send('this is a fragment');
+
+    expect(res.statusCode).toBe(201);
+    expect(res.text.includes('application/json')).toBe(true);
+  });
+
+  test('Unauthenticated users request supported content type', async () => {
+    const res = await request(app)
+      .post('/v1/fragments')
+      .auth('user1@email.com', 'password')
+      .set('Content-type', 'text/plain')
+      .send('this is a fragment');
+    expect(res.statusCode).toBe(401);
+    expect(res.body.status).toBe('error');
+    expect(res.body.error.message).toBe('Unauthorized');
+  });
 });
