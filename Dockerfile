@@ -22,10 +22,8 @@ ENV NPM_CONFIG_COLOR=false
 
 #------------------------------------------------------------
 
-
 # Use /app as our working directory
 WORKDIR /app
-
 
 # Notes on following commands: 
 # We need to cpy our packages for our microservice, then install them. After that
@@ -33,13 +31,23 @@ WORKDIR /app
 
 # Copy the package.json and package-lock.json files into /app
 # since we declare /app as workdir, we can also copy to ./
-COPY package*.json /app/
+COPY package*.json ./
 
 # Install node dependencies defined in package-lock.json
 RUN npm i
 
+# Second stage
+FROM node:14.19-alpine3.14@sha256:8c93166ecea91d8384d9f1768ceaca1cd8bc22c1eb13005cecfb491588bd8169 AS deployment
+
+# Use /app as our working directory
+WORKDIR /app
+
+#Copy node modules and jsons from base
+COPY --from=base /app/package*.json ./ 
+COPY --from=base /app/node_modules ./node_modules
+
 # Copy src to /app/src/
-COPY ./src ./src
+COPY src ./src
 
 # Copy our HTPASSWD file
 COPY ./tests/.htpasswd ./tests/.htpasswd
