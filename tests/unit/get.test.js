@@ -30,7 +30,7 @@ describe('GET /v1/fragments', () => {
     expect(res.body.status).toBe('error');
   });
 
-  test('authenticated users request a fragment that does exist', async () => {
+  test('authenticated users request a text/plain fragment that does exist', async () => {
     const user = hash('user1@email.com');
     const data = 'This is my test string';
     const fragment = new Fragment({
@@ -43,10 +43,70 @@ describe('GET /v1/fragments', () => {
     const res = await request(app)
       .get(`/v1/fragments/${fragment.id}`)
       .auth('user1@email.com', 'password1');
-    expect(res.body.status).toBe('ok');
-    expect(res.body.fragment).toStrictEqual(data);
+    const cn = JSON.parse(res.text);
+
+    expect(res.statusCode).toBe(200);
+    expect(cn.status).toBe('ok');
+    expect(cn.fragment).toStrictEqual(data);
   });
 
-  // TODO: we'll need to add tests to check the contents of the fragments array later
-  // I'm unable to do this, there's an issue with my authenticate function
+  test('authenticated users request a text/html fragment that does exist', async () => {
+    const user = hash('user1@email.com');
+    const data = 'This is my test string';
+    const fragment = new Fragment({
+      ownerId: user,
+      type: 'text/html',
+      size: 0,
+    });
+    await fragment.setData(Buffer.from(data, 'utf8'));
+    await fragment.save();
+    const res = await request(app)
+      .get(`/v1/fragments/${fragment.id}`)
+      .auth('user1@email.com', 'password1');
+    const cn = JSON.parse(res.text);
+
+    expect(res.statusCode).toBe(200);
+    expect(cn.status).toBe('ok');
+    expect(cn.fragment).toStrictEqual(data);
+  });
+
+  test('authenticated users request a text/markdown fragment that does exist', async () => {
+    const user = hash('user1@email.com');
+    const data = 'This is my test string';
+    const fragment = new Fragment({
+      ownerId: user,
+      type: 'text/markdown',
+      size: 0,
+    });
+    await fragment.setData(Buffer.from(data, 'utf8'));
+    await fragment.save();
+    const res = await request(app)
+      .get(`/v1/fragments/${fragment.id}`)
+      .auth('user1@email.com', 'password1');
+    const cn = JSON.parse(res.text);
+
+    expect(res.statusCode).toBe(200);
+    expect(cn.status).toBe('ok');
+    expect(cn.fragment).toStrictEqual(data);
+  });
+
+  test('authenticated users request a application/json fragment that does exist', async () => {
+    const user = hash('user1@email.com');
+    const data = 'This is my test string';
+    const fragment = new Fragment({
+      ownerId: user,
+      type: 'application/json',
+      size: 0,
+    });
+    await fragment.setData(Buffer.from(data, 'utf8'));
+    await fragment.save();
+    const res = await request(app)
+      .get(`/v1/fragments/${fragment.id}`)
+      .auth('user1@email.com', 'password1');
+    const cn = JSON.parse(res.text);
+
+    expect(res.statusCode).toBe(200);
+    expect(cn.status).toBe('ok');
+    expect(cn.fragment).toStrictEqual(data);
+  });
 });
