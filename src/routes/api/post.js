@@ -25,7 +25,8 @@ module.exports = (req, res) => {
   // Use fragments class to create and save a new fragment and the data.
   const fragment = new Fragment({ ownerId: req.user, type: req.get('Content-Type') });
   async function save() {
-    logger.info(`API - Post.js: Attempting to save new fragment ${fragment} `);
+    logger.debug(`API - Post.js: Received ${JSON.stringify(fragment)} `);
+
     await fragment.save();
     await fragment.setData(req.body);
     logger.debug(`size after save: ${fragment.size}`);
