@@ -49,7 +49,7 @@ module.exports = (req, res) => {
         );
       }
     })
-    .catch((e) => {
+    .catch(() => {
       res.status(404).json(
         response.createErrorResponse({
           message: `The fragment with id: ${req.params.id} does not exist.`,
