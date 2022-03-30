@@ -10,11 +10,7 @@ describe('API Responses', () => {
     const errorResponse = createErrorResponse(404, 'not found');
     // Expect the result to look like the following
     expect(errorResponse).toEqual({
-      status: 'error',
-      error: {
-        code: 404,
-        message: 'not found',
-      },
+      message: 'not found',
     });
   });
 

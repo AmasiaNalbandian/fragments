@@ -24,7 +24,6 @@ describe('GET /v1/fragments', () => {
       .get('/v1/fragments/abcdef/info')
       .auth('user1@email.com', 'password1');
     expect(res.statusCode).toBe(404);
-    expect(res.body.status).toBe('error');
     expect(Array.isArray(res.body.fragments)).toBe(false);
   });
 
@@ -84,8 +83,8 @@ describe('GET /v1/fragments', () => {
     const fragmentJSON = JSON.parse(res.text);
 
     expect(res.statusCode).toBe(415);
-    expect(fragmentJSON.status).toBe('error');
-    expect(fragmentJSON.error.code.message).toBe(
+    expect(fragmentJSON.code).toBe(415);
+    expect(fragmentJSON.message).toBe(
       'Requested extension of .json is not supported for this fragment.'
     );
   });

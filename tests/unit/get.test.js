@@ -27,7 +27,7 @@ describe('GET /v1/fragments', () => {
       .get('/v1/fragments/123123123')
       .auth('user1@email.com', 'password1');
     expect(res.statusCode).toBe(404);
-    expect(res.body.status).toBe('error');
+    expect(res.body.message).toBe('The fragment with id: 123123123 does not exist.');
   });
 
   test('authenticated users request a text/plain fragment that does exist', async () => {

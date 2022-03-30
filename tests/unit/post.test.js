@@ -74,7 +74,6 @@ describe('POST /v1/fragments', () => {
       .set('Content-type', 'text/plain')
       .send('this is a fragment');
     expect(res.statusCode).toBe(401);
-    expect(res.body.status).toBe('error');
-    expect(res.body.error.message).toBe('Unauthorized');
+    expect(res.body.message).toBe('Unauthorized');
   });
 });

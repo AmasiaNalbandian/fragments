@@ -22,7 +22,6 @@ describe('GET /v1/fragments', () => {
   test('authenticated users attempts to get data for a fragment which does not exist', async () => {
     const res = await request(app).get('/v1/fragments/abcdef').auth('user1@email.com', 'password1');
     expect(res.statusCode).toBe(404);
-    expect(res.body.status).toBe('error');
     expect(Array.isArray(res.body.fragments)).toBe(false);
   });
 
@@ -82,8 +81,7 @@ describe('GET /v1/fragments', () => {
     const fragmentJSON = JSON.parse(res.text);
 
     expect(res.statusCode).toBe(415);
-    expect(fragmentJSON.status).toBe('error');
-    expect(fragmentJSON.error.code.message).toBe(
+    expect(fragmentJSON.message).toBe(
       'Requested extension of .json is not supported for this fragment.'
     );
   });
