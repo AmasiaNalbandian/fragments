@@ -11,7 +11,7 @@ const {
   writeFragmentData,
   listFragments,
   deleteFragment,
-} = require('./data/memory/index');
+} = require('./data/index');
 // const { P } = require('pino');
 const logger = require('../../src/logger');
 
