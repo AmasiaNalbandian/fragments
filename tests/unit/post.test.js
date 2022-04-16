@@ -71,7 +71,7 @@ describe('POST /v1/fragments', () => {
     const res = await request(app)
       .post('/v1/fragments')
       .auth('user1@email.com', 'password')
-      .set('Content-type', 'text/plain')
+      .set('Content-type', 'text/javascript')
       .send('this is a fragment');
     expect(res.statusCode).toBe(401);
     expect(res.body.message).toBe('Unauthorized');
