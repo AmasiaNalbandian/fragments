@@ -4,8 +4,8 @@
 POST http://localhost:8080/v1/fragments
 # user1@email.com:password1
 Authorization: Basic dXNlcjFAZW1haWwuY29tOnBhc3N3b3JkMQ==
-# We're sending an image fragment
-Content-Type: image/png
+# We're sending a javascript text fragment, which is not supported
+Content-Type: text/javascript
 # Body of the request goes in ```...``` when it's a string
 ```This is a fragment!```
 
