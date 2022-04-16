@@ -1,7 +1,7 @@
 //src/model/data/aws/index.js
 const s3Client = require('./s3Client');
 const ddbDocClient = require('./ddbDocClient');
-const { PutObjectCommand, GetObjectCommand } = require('@aws-sdk/client-s3');
+const { PutObjectCommand, GetObjectCommand, DeleteObjectCommand } = require('@aws-sdk/client-s3');
 const { PutCommand, GetCommand, QueryCommand, DeleteCommand } = require('@aws-sdk/lib-dynamodb');
 
 const logger = require('../../../logger');
@@ -180,9 +180,34 @@ async function deleteFragment(ownerId, id) {
   }
 }
 
+// Reads a fragment's data from S3 and returns (Promise<Buffer>)
+// https://github.com/awsdocs/aws-sdk-for-javascript-v3/blob/main/doc_source/s3-example-creating-buckets.md#getting-a-file-from-an-amazon-s3-bucket
+async function deleteFragmentData(ownerId, id) {
+  // Create the PUT API params from our details
+  const params = {
+    Bucket: process.env.AWS_S3_BUCKET_NAME,
+    // Our key will be a mix of the ownerID and fragment id, written as a path
+    Key: `${ownerId}/${id}`,
+  };
+
+  // Create a GET Object command to send to S3
+  const command = new DeleteObjectCommand(params);
+
+  try {
+    // Use our client to send the command
+    await s3Client.send(command);
+  } catch (err) {
+    // If anything goes wrong, log enough info that we can debug
+    const { Bucket, Key } = params;
+    logger.error({ err, Bucket, Key }, 'Error delete fragment data in S3');
+    throw new Error('unable to delete fragment data');
+  }
+}
+
 module.exports.listFragments = listFragments;
 module.exports.writeFragment = writeFragment;
 module.exports.readFragment = readFragment;
 module.exports.writeFragmentData = writeFragmentData;
 module.exports.readFragmentData = readFragmentData;
 module.exports.deleteFragment = deleteFragment;
+module.exports.deleteFragmentData = deleteFragmentData;

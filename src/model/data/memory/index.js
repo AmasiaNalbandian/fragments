@@ -39,11 +39,17 @@ async function listFragments(ownerId, expand = false) {
   return fragments.map((fragment) => fragment.id);
 }
 
-// Delete a fragment's metadata and data from memory db. Returns a Promise
+// Delete a fragment's metadata from memory db. Returns a Promise
 function deleteFragment(ownerId, id) {
   return Promise.all([
     // Delete metadata
     metadata.del(ownerId, id),
+  ]);
+}
+
+// Delete a fragment's metadata and data from memory db. Returns a Promise
+function deleteFragmentData(ownerId, id) {
+  return Promise.all([
     // Delete data
     data.del(ownerId, id),
   ]);
@@ -55,3 +61,4 @@ module.exports.readFragment = readFragment;
 module.exports.writeFragmentData = writeFragmentData;
 module.exports.readFragmentData = readFragmentData;
 module.exports.deleteFragment = deleteFragment;
+module.exports.deleteFragmentData = deleteFragmentData;

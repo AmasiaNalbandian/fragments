@@ -11,6 +11,7 @@ const {
   writeFragmentData,
   listFragments,
   deleteFragment,
+  deleteFragmentData,
 } = require('./data/index');
 // const { P } = require('pino');
 const logger = require('../../src/logger');
@@ -24,6 +25,7 @@ const supportedFormats = [
   'text/markdown',
   'text/html',
   'application/json',
+  'image/png',
 ];
 
 const conversions = [
@@ -42,6 +44,10 @@ const conversions = [
   {
     type: 'application/json',
     conversionExtensions: ['.json', '.txt'],
+  },
+  {
+    type: 'image/png',
+    conversionExtensions: ['.png', '.jpg', '.webp', '.gif'],
   },
 ];
 
@@ -100,7 +106,7 @@ class Fragment {
    * @returns Promise
    */
   static async delete(ownerId, id) {
-    return deleteFragment(ownerId, id);
+    return deleteFragment(ownerId, id) && deleteFragmentData(ownerId, id);
   }
 
   /**
