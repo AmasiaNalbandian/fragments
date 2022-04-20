@@ -12,7 +12,7 @@ const { convert } = require('html-to-text');
 
 // convert images to common formats, is used for all accepted image types
 // https://www.npmjs.com/package/sharp
-// const sharp = require('sharp');
+const sharp = require('sharp');
 
 module.exports = (req, res) => {
   logger.debug(`GET v1/fragments - Fragment ID detected: ${req.params.id}`);
@@ -103,7 +103,7 @@ function convertToRequestedType(metadata, data, ext) {
   } else if (metadata.mimeType === 'application/json' && ext === '.txt') {
     convertedData = JSON.stringify(data.toString());
   } else {
-    // convertedData = formatImage(data, ext.substring(1));
+    convertedData = formatImage(data, ext.substring(1));
   }
   logger.debug(`getDataById.js - convertToRequestedType - converted data: ${convertedData}`);
   return convertedData;
@@ -113,9 +113,9 @@ function convertToRequestedType(metadata, data, ext) {
  *
  * @param {string} ext - has ext without the '.'
  */
-// const formatImage = (data, ext) => {
-//   sharp(data).toFormat(ext).toBuffer();
-// };
+const formatImage = (data, ext) => {
+  sharp(data).toFormat(ext).toBuffer();
+};
 
 async function getFragmentById(user, fragmentId) {
   logger.info(`API - get.js: Attempting to get fragment by fragment id: ${fragmentId}`);
