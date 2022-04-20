@@ -29,3 +29,23 @@ module.exports.deleteFragment = async (user, fragmentId) => {
   fragment = await Fragment.delete(user, fragmentId);
   return fragment;
 };
+
+/**
+ *
+ * @param {*} user
+ * @param {*} fragmentId
+ * @returns
+ */
+module.exports.getFragmentById = async (user, fragmentId) => {
+  logger.info(`API - get.js: Attempting to get fragment by fragment id`);
+  let fragment = Fragment;
+
+  fragment = await Fragment.byId(user, fragmentId);
+  if (fragment) {
+    logger.debug(`API - fragmentMethods.js - getFragmentById - Fragment is not null.`);
+    return new Fragment(fragment);
+  } else {
+    logger.debug(`API - fragmentMethods.js - getFragmentById - Fragment is null.`);
+    throw new Error(`Fragment not found.`);
+  }
+};

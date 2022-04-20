@@ -1,8 +1,8 @@
 // src/routes/api/get.js
 // Our response handlers
 const response = require('../../response');
-const { Fragment } = require('../../model/fragment');
 const logger = require('../../logger');
+const { getFragmentById } = require('./util/fragmentMethods');
 
 module.exports = (req, res) => {
   logger.debug(`GET v1/fragments - getMetadataByID: Fragment ID detected: ${req.params.id}`);
@@ -25,19 +25,3 @@ module.exports = (req, res) => {
       );
     });
 };
-
-async function getFragmentById(user, fragmentId) {
-  logger.info(`API - get.js: Attempting to get fragment by fragment id`);
-  let fragment = Fragment;
-
-  fragment = await Fragment.byId(user, fragmentId);
-  // const fragmentData = await Fragment.ge
-  // Check if it is null to figure out if we throw error or not.
-  if (fragment) {
-    logger.debug(`API - get.js: getFragmentById - Fragment is not null.`);
-    return new Fragment(fragment);
-  } else {
-    logger.debug(`API - get.js: getFragmentById - Fragment is null.`);
-    throw new Error(`Fragment not found.`);
-  }
-}

@@ -3,7 +3,7 @@
 // Our response handlers
 const logger = require('../../logger');
 const response = require('../../response');
-const saveFragment = require('./util/fragmentMethods');
+const { saveFragment } = require('./util/fragmentMethods');
 
 module.exports = (req, res) => {
   logger.info(`updateById.js - Received new request: ${req}`);
