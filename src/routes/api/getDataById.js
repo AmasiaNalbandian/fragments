@@ -103,29 +103,19 @@ function convertToRequestedType(metadata, data, ext) {
   } else if (metadata.mimeType === 'application/json' && ext === '.txt') {
     convertedData = JSON.stringify(data.toString());
   } else {
-    convertedData = convertImageFragment(data, ext);
+    convertedData = formatImage(data, ext.substring(1));
   }
   logger.debug(`getDataById.js - convertToRequestedType - converted data: ${convertedData}`);
   return convertedData;
 }
 
-// Will handle conversion for images using sharp
-async function convertImageFragment() {
-  // We took care of all the cases that we can accept conversion, all other
-  // scenarios are now images
-  let convertedData = await sharp({
-    create: {
-      width: 48,
-      height: 48,
-      channels: 4,
-      background: { r: 255, g: 0, b: 0, alpha: 0.5 },
-    },
-  })
-    .png()
-    .toBuffer();
-
-  return convertedData;
-}
+/**
+ *
+ * @param {string} ext - has ext without the '.'
+ */
+const formatImage = (data, ext) => {
+  sharp(data).toFormat(ext).toBuffer();
+};
 
 async function getFragmentById(user, fragmentId) {
   logger.info(`API - get.js: Attempting to get fragment by fragment id: ${fragmentId}`);
