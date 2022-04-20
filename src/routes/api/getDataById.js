@@ -59,6 +59,8 @@ module.exports = (req, res) => {
 
           // Time to figure out which conversion method we will be using:
           convertedFragmentData = convertToRequestedType(metadata, data, ext);
+
+          logger.debug(`getDataById.js - Conversion received: ${convertedFragmentData}`);
         } else {
           // We don't need to convert the data return that.
           convertedFragmentData = data.toString();
@@ -90,7 +92,7 @@ module.exports = (req, res) => {
  * @param {string} ext - Extension to convert data into
  * @returns desired converted Fragment data
  */
-async function convertToRequestedType(metadata, data, ext) {
+function convertToRequestedType(metadata, data, ext) {
   let convertedData;
   // .md converts to html or txt
   if (metadata.mimeType === 'text/markdown') {
@@ -101,19 +103,27 @@ async function convertToRequestedType(metadata, data, ext) {
   } else if (metadata.mimeType === 'application/json' && ext === '.txt') {
     convertedData = JSON.stringify(data.toString());
   } else {
-    // We took care of all the cases that we can accept conversion, all other
-    // scenarios are now images
-    convertedData = await sharp({
-      create: {
-        width: 48,
-        height: 48,
-        channels: 4,
-        background: { r: 255, g: 0, b: 0, alpha: 0.5 },
-      },
-    })
-      .png()
-      .toBuffer();
+    convertedData = convertImageFragment(data, ext);
   }
+  logger.debug(`getDataById.js - convertToRequestedType - converted data: ${convertedData}`);
+  return convertedData;
+}
+
+// Will handle conversion for images using sharp
+async function convertImageFragment() {
+  // We took care of all the cases that we can accept conversion, all other
+  // scenarios are now images
+  let convertedData = await sharp({
+    create: {
+      width: 48,
+      height: 48,
+      channels: 4,
+      background: { r: 255, g: 0, b: 0, alpha: 0.5 },
+    },
+  })
+    .png()
+    .toBuffer();
+
   return convertedData;
 }
 
