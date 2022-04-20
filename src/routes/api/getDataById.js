@@ -12,7 +12,7 @@ const { convert } = require('html-to-text');
 
 // convert images to common formats, is used for all accepted image types
 // https://www.npmjs.com/package/sharp
-const sharp = require('sharp');
+// const sharp = require('sharp');
 
 module.exports = (req, res) => {
   logger.debug(`GET v1/fragments - Fragment ID detected: ${req.params.id}`);
