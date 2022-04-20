@@ -113,9 +113,9 @@ function convertToRequestedType(metadata, data, ext) {
  *
  * @param {string} ext - has ext without the '.'
  */
-const formatImage = (data, ext) => {
-  sharp(data).toFormat(ext).toBuffer();
-};
+// const formatImage = (data, ext) => {
+//   sharp(data).toFormat(ext).toBuffer();
+// };
 
 async function getFragmentById(user, fragmentId) {
   logger.info(`API - get.js: Attempting to get fragment by fragment id: ${fragmentId}`);
