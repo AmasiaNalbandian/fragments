@@ -1,12 +1,12 @@
-// src/routes/api/post.js
+// src/routes/api/updateById.js
 
 // Our response handlers
 const logger = require('../../logger');
 const response = require('../../response');
-const { Fragment } = require('../../model/fragment');
+const saveFragment = require('./util/fragmentMethods');
 
 module.exports = (req, res) => {
-  logger.info(`Received new request: ${req}`);
+  logger.info(`updateById.js - Received new request: ${req}`);
 
   // req.body is the data, and rawBody returns either Buffer or {}
   // Check if we have buffer, otherwise we can't save this, and create error response.
@@ -22,24 +22,14 @@ module.exports = (req, res) => {
     );
   }
 
-  // Use fragments class to create and save a new fragment and the data.
-  const fragment = new Fragment({
-    id: req.params.id,
-    ownerId: req.user,
-    type: req.get('Content-Type'),
-  });
-  async function save() {
-    logger.debug(`API - Put.js: Received ${JSON.stringify(fragment)} `);
-
-    await fragment.save();
-    await fragment.setData(req.body);
-    logger.debug(`size after save: ${fragment.size}`);
-  }
-  save()
-    .then(() => {
+  // Use saveFragment to create and save a new fragment and the data.
+  saveFragment(req)
+    .then((fragment) => {
+      // Set the appropriate headers in the response
       res.setHeader('Content-Type', fragment.type);
       res.setHeader('Location', `${process.env.API_URL}/v1/fragments/${fragment.id}`);
 
+      // Attach the response
       res.status(201).json(
         response.createSuccessResponse({
           status: 'ok',
@@ -47,5 +37,5 @@ module.exports = (req, res) => {
         })
       );
     })
-    .catch((e) => console.log('error updating new fragment: ', e));
+    .catch((e) => console.log('error creating new fragment: ', e));
 };

@@ -3,7 +3,7 @@
 // Our response handlers
 const logger = require('../../logger');
 const response = require('../../response');
-const { Fragment } = require('../../model/fragment');
+const { saveFragment } = require('./util/fragmentMethods');
 
 module.exports = (req, res) => {
   logger.info(`Received new request: ${req}`);
@@ -22,20 +22,16 @@ module.exports = (req, res) => {
     );
   }
 
-  // Use fragments class to create and save a new fragment and the data.
-  const fragment = new Fragment({ ownerId: req.user, type: req.get('Content-Type') });
-  async function save() {
-    logger.debug(`API - Post.js: Received ${JSON.stringify(fragment)} `);
+  // Use saveFragment to create and save a new fragment and the data.
+  saveFragment(req)
+    .then((fragment) => {
+      logger.info(`Received fragment saved request: ${fragment}`);
 
-    await fragment.save();
-    await fragment.setData(req.body);
-    logger.debug(`size after save: ${fragment.size}`);
-  }
-  save()
-    .then(() => {
+      // Set the appropriate headers in the response
       res.setHeader('Content-Type', fragment.type);
       res.setHeader('Location', `${process.env.API_URL}/v1/fragments/${fragment.id}`);
 
+      // Attach the response
       res.status(201).json(
         response.createSuccessResponse({
           status: 'ok',

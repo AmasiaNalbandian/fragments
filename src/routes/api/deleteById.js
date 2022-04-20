@@ -1,8 +1,8 @@
-// src/routes/api/get.js
+// src/routes/api/delete.js
 // Our response handlers
 const response = require('../../response');
-const { Fragment } = require('../../model/fragment');
 const logger = require('../../logger');
+const { deleteFragment } = require('./util/fragmentMethods');
 
 module.exports = (req, res) => {
   logger.info(`GET v1/fragments request received`);
@@ -26,10 +26,3 @@ module.exports = (req, res) => {
       );
     });
 };
-
-async function deleteFragment(user, fragmentId) {
-  let fragment = Fragment;
-
-  fragment = await Fragment.delete(user, fragmentId);
-  return fragment;
-}

@@ -111,10 +111,12 @@ function convertToRequestedType(metadata, data, ext) {
 
 /**
  *
- * @param {string} ext - has ext without the '.'
+ * @param {*} data
+ * @param {*} ext
+ * @returns {Buffer} with new extension
  */
 const formatImage = (data, ext) => {
-  sharp(data).toFormat(ext).toBuffer();
+  return sharp(data).toFormat(ext).toBuffer();
 };
 
 async function getFragmentById(user, fragmentId) {
