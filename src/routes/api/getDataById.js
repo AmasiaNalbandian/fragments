@@ -5,6 +5,14 @@ const { Fragment } = require('../../model/fragment');
 const logger = require('../../logger');
 const path = require('path');
 var md = require('markdown-it')();
+// Remove markdown to text
+const removeMd = require('remove-markdown');
+// Remove html to text
+const { convert } = require('html-to-text');
+
+// convert images to common formats, is used for all accepted image types
+// https://www.npmjs.com/package/sharp
+const sharp = require('sharp');
 
 module.exports = (req, res) => {
   logger.debug(`GET v1/fragments - Fragment ID detected: ${req.params.id}`);
@@ -12,7 +20,7 @@ module.exports = (req, res) => {
   // https://stackoverflow.com/questions/4250364/how-to-trim-a-file-extension-from-a-string-in-javascript
   // Need to use: https://nodejs.org/api/path.html#pathextnamepath, as .ext does not support .json
   // and nanoid does not produce id with '.'
-  const ext = path.extname(req.params.id);
+  let ext = path.extname(req.params.id);
   const id = req.params.id.replace(ext, '');
   logger.debug(`GET v1/fragments - byId: received extension of ${ext} and id of ${id}`);
   getFragmentById(req.user, id)
@@ -31,20 +39,36 @@ module.exports = (req, res) => {
           })
         );
       } else {
-        res.setHeader(
-          'Content-Type',
-          ext.length ? metadata.mimeTypeByExtension(ext) : metadata.mimeType
-        );
+        // If ext not included in request set it to the default for the type
+        if (!ext) {
+          ext = metadata.formats[0];
+        }
 
-        let isConvertedSupportType = ext === '.html' && metadata.mimeType === 'text/markdown';
-        logger.debug(
-          `isConverted: ${isConvertedSupportType}, fragment mimtype: ${metadata.mimeType}`
-        );
+        // Set header for the content-type in res
+        res.setHeader('Content-Type', metadata.mimeTypeByExtension(ext));
+
+        /** Variable will hold the fragment data in the requested type
+         * This is returned in the response as the fragment data to display.
+         */
+        let convertedFragmentData;
+
+        if (metadata.mimeTypeByExtension(ext) !== metadata.mimeType) {
+          logger.debug(
+            'The requested extension does not match the metadata extension. This fragment will be converted.'
+          );
+
+          // Time to figure out which conversion method we will be using:
+          convertedFragmentData = convertToRequestedType(metadata, data, ext);
+        } else {
+          // We don't need to convert the data return that.
+          convertedFragmentData = data.toString();
+        }
+
         res.status(200).json(
           response.createSuccessResponse({
             status: 'ok',
             code: 200,
-            fragment: isConvertedSupportType ? md.render(data.toString()) : data.toString(),
+            fragment: convertedFragmentData,
           })
         );
       }
@@ -58,6 +82,40 @@ module.exports = (req, res) => {
       );
     });
 };
+
+/**
+ *
+ * @param {string} metadata - metadata for the fragment we are converting
+ * @param {any} data = Data to convert
+ * @param {string} ext - Extension to convert data into
+ * @returns desired converted Fragment data
+ */
+async function convertToRequestedType(metadata, data, ext) {
+  let convertedData;
+  // .md converts to html or txt
+  if (metadata.mimeType === 'text/markdown') {
+    convertedData = ext === '.txt' ? removeMd(data.toString()) : md.render(data.toString());
+  } else if (metadata.mimeType === 'text/html' && ext === '.txt') {
+    // .html converts to text
+    convertedData = convert(data.toString());
+  } else if (metadata.mimeType === 'application/json' && ext === '.txt') {
+    convertedData = JSON.stringify(data.toString());
+  } else {
+    // We took care of all the cases that we can accept conversion, all other
+    // scenarios are now images
+    convertedData = await sharp({
+      create: {
+        width: 48,
+        height: 48,
+        channels: 4,
+        background: { r: 255, g: 0, b: 0, alpha: 0.5 },
+      },
+    })
+      .png()
+      .toBuffer();
+  }
+  return convertedData;
+}
 
 async function getFragmentById(user, fragmentId) {
   logger.info(`API - get.js: Attempting to get fragment by fragment id: ${fragmentId}`);

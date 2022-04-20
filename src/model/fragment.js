@@ -3,7 +3,7 @@ const { nanoid } = require('nanoid');
 // Use https://www.npmjs.com/package/content-type to create/parse Content-Type headers
 const contentType = require('content-type');
 
-// Functions for working with fragment metadata/data using our DB
+// Functions for working with fragment metadata/data using our DB(aws(s3 and DynamoDB) or memoryDB)
 const {
   readFragment,
   writeFragment,
@@ -13,11 +13,10 @@ const {
   deleteFragment,
   deleteFragmentData,
 } = require('./data/index');
-// const { P } = require('pino');
 const logger = require('../../src/logger');
 
 /**
- * List of supported formats for the app
+ * List of supported formats accepted and supported.
  */
 const supportedFormats = [
   'text/plain',
@@ -26,8 +25,18 @@ const supportedFormats = [
   'text/html',
   'application/json',
   'image/png',
+  'image/jpeg	',
+  'image/webp',
+  'image/gif',
 ];
 
+/**
+ * List of conversion extensions allowed for each mimeType.
+ * Each element in the array contains an object of
+ * @type {string} - describes the mimetype
+ * @conversionExtensions - an array of strings with the extensions allowed to be converted into.
+ * NOTE: The first conversion extension is the extension for the specific mimetype
+ */
 const conversions = [
   {
     type: 'text/plain',
@@ -48,6 +57,18 @@ const conversions = [
   {
     type: 'image/png',
     conversionExtensions: ['.png', '.jpg', '.webp', '.gif'],
+  },
+  {
+    type: 'image/jpg',
+    conversionExtensions: ['.jpg', '.png', '.webp', '.gif'],
+  },
+  {
+    type: 'image/webp',
+    conversionExtensions: ['.webp', '.jpg', '.png', '.gif'],
+  },
+  {
+    type: 'image/gif',
+    conversionExtensions: ['.gif', '.jpg', '.webp', '.png'],
   },
 ];
 
