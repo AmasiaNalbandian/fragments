@@ -103,7 +103,7 @@ function convertToRequestedType(metadata, data, ext) {
   } else if (metadata.mimeType === 'application/json' && ext === '.txt') {
     convertedData = JSON.stringify(data.toString());
   } else {
-    convertedData = formatImage(data, ext.substring(1));
+    // convertedData = formatImage(data, ext.substring(1));
   }
   logger.debug(`getDataById.js - convertToRequestedType - converted data: ${convertedData}`);
   return convertedData;

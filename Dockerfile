@@ -34,8 +34,7 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install node dependencies defined in package-lock.json
-# RUN npm i
-RUN npm i --platform=linuxmusl sharp
+RUN npm i
 
 # Second stage
 FROM node:14.19-alpine3.14@sha256:8c93166ecea91d8384d9f1768ceaca1cd8bc22c1eb13005cecfb491588bd8169 AS deployment
