@@ -34,7 +34,7 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install node dependencies defined in package-lock.json
-# RUN npm i
+RUN npm i
 RUN npm ci --only=production && npm rebuild --arch=x64 --platform=linuxmusl  sharp
 
 # Second stage
