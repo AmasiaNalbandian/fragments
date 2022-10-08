@@ -1,6 +1,6 @@
 # fragments
 
-CCP555-winter-2022 Backend microservice
+Fragments Backend microservice
 
 ### Running the Server
 
